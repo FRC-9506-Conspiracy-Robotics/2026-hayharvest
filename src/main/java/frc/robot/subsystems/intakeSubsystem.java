@@ -17,49 +17,48 @@ import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.commands.DeployIntakeCommand;
 
 public class intakeSubsystem extends SubsystemBase {
+  public final SparkMax deployLeaderMotor = new SparkMax(Constants.intakeConstants.intakeDeployID, MotorType.kBrushless); //it won't error if I change the ID
+  public final SparkMax deployFollowerMotor = new SparkMax(Constants.intakeConstants.intakeFollowerID, MotorType.kBrushless); //same as leader
+  public final SparkMax intakeMotor = new SparkMax(Constants.intakeConstants.intakeID, MotorType.kBrushless); //same as the rest
+
+  public final RelativeEncoder deployEncoder = deployLeaderMotor.getEncoder();
+  public final RelativeEncoder followerEncoder = deployFollowerMotor.getEncoder();
+
+  public boolean desiredPosition = false; //I will fix the error after I write the deployintake commandd
+
+  public boolean intakeDeployed = true;
+  public boolean intakeStowed = false;
+
+  public double deploySpeed = 0.01;
+
+  // final DoublePublisher deployInfo;
+  SparkMaxConfig intakeConfig = new SparkMaxConfig();
+  SparkMaxConfig deployLeaderConfig = new SparkMaxConfig();
+  SparkMaxConfig deployFollowerConfig = new SparkMaxConfig();
+ 
+
   /** Creates a new intakeSubsystem. */
   public intakeSubsystem() {
+      intakeConfig
+    .idleMode(IdleMode.kCoast)
+    .smartCurrentLimit(0);// CHANGE THIS 
 
-    public final SparkMax deployLeaderMotor = new SparkMax(Constants.intakeConstants.intakeDeployID, MotorType.kBrushless); //it won't error if I change the ID
-    public final SparkMax deployFollowerMotor = new SparkMax(Constants.intakeConstants.intakeFollowerID, MotorType.kBrushless); //same as leader
-    public final SparkMax intakeMotor = new SparkMax(Constants.intakeConstants.intakeID, MotorType.kBrushless); //same as the rest
-
-    public final RelativeEncoder deployEncoder = deployLeaderMotor.getEncoder();
-    public final RelativeEncoder followerEncoder = deployFollowerMotor.getEncoder();
-
-    public boolean desiredPosition = false; //I will fix the error after I write the deployintake commandd
-
-    public boolean intakeDeployed = true;
-    public boolean intakeStowed = false;
-
-    public double deploySpeed = 0.01;
-
-    final DoublePublisher deployInfo;
-    
-    SparkMaxConfig intakeConfig = new SparkMaxConfig();
-    intakeConfig
-      .idleMode(IdleMode.kCoast)
-      .smartCurrentLimit(0);// CHANGE THIS 
-
-    SparkMaxConfig deployLeaderConfig = new SparkMaxConfig();
-    deployLeaderConfig
-      .idleMode(IdleMode.kCoast)
-      .smartCurrentLimit(0); //CHANGE THIS
-
+      deployLeaderConfig
+    .idleMode(IdleMode.kCoast)
+    .smartCurrentLimit(0); //CHANGE THIS
     deployLeaderMotor.configure(deployLeaderConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
-    SparkMaxConfig deployFollowerConfig = new SparkMaxConfig();
-    deployFollowerConfig
-      .idleMode(IdleMode.kCoast)
-      .follow(deployLeaderMotor, true);
-
+ deployFollowerConfig
+    .idleMode(IdleMode.kCoast)
+    .follow(deployLeaderMotor, true);
     deployFollowerMotor.configure(deployFollowerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   public Command deployIntake(){
-    return new deployIntake();//I will create the command so it doesn't error anymore
+    return new DeployIntakeCommand(this);//I will create the command so it doesn't error anymore
   }
 
   public Command startIntakeCommand(){
@@ -74,7 +73,7 @@ public class intakeSubsystem extends SubsystemBase {
       () -> {this.desiredPosition = !this.desiredPosition;
             this.deploySpeed = 0.01;
       }
-    )
+    );
   }
 
   @Override

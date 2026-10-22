@@ -8,13 +8,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intakeSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class deployIntake extends Command {
+public class DeployIntakeCommand extends Command {
   /** Creates a new deployIntake. */
   public intakeSubsystem intake;
 
   //THESE ERRORS WILL DISAPPEAR ONCE WE HAVE THE BOT
 
-  public deployIntake(intakeSubsystem _intake) {
+  public DeployIntakeCommand(intakeSubsystem _intake) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intake = _intake;
     this.addRequirements(this.intake);
@@ -48,8 +48,8 @@ public class deployIntake extends Command {
   @Override
   public boolean isFinished() {
 
-    double deployPosition; //measure once the bot is built
-    double stowedPosition; //measure once the bot is built
+    double deployPosition = 95.0; //measure once the bot is built
+    double stowedPosition = 5.0; //measure once the bot is built
 
     if(this.intake.desiredPosition == this.intake.intakeDeployed){
       return this.intake.deployEncoder.getPosition() < deployPosition;
