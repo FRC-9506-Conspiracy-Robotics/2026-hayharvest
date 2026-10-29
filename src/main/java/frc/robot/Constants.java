@@ -22,6 +22,16 @@ public final class Constants {
       public static int intakeFollowerID; //edit
     }
 
+  public static class shooterConstants{
+    public static int bigRoller1ID;
+    public static int bigRoller2ID;
+
+    public static int lilRoller1ID;
+    public static int lilRoller2ID;
+    public static int lilRoller3ID;
+    public static int lilRoller4ID;
+  }
+
   public static class swerveConstants{
     public static final double maxDriveSpeed = Units.feetToMeters(15);
   }
