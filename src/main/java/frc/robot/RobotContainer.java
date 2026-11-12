@@ -10,7 +10,6 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.intakeSubsystem;
 import frc.robot.subsystems.shooterSubsystem;
-import frc.robot.subsystems.swerveSubsystem;
 import swervelib.SwerveDrive;
 import swervelib.SwerveInputStream;
 
@@ -39,33 +38,13 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final intakeSubsystem intake = new intakeSubsystem();
-  private final swerveSubsystem drivebase = new swerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
   private final shooterSubsystem shooter = new shooterSubsystem();
   private final SendableChooser<Command> autoChooser;
-
-  public final SwerveDrive swerveDrive = drivebase.getSwerveDrive();
 
  
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
-
-  //Converts controller inputs to swerveinputstream
-  SwerveInputStream driveAngularVelocity =
-    SwerveInputStream.of(
-      drivebase.getSwerveDrive(),
-        () -> m_driverController.getLeftY(),
-        () -> m_driverController.getLeftX()
-  )
-  .withControllerRotationAxis(() -> -m_driverController.getRightX())
-  .deadband(Constants.OperatorConstants.kDeadband)
-  .scaleTranslation(0.8)
-  .allianceRelativeControl(true);
-
-  SwerveInputStream driveRobotOriented =
-  driveAngularVelocity.copy()
-  .robotRelative(true)
-  .allianceRelativeControl(false);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -93,8 +72,6 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    
-    m_driverController.leftStick().onTrue(drivebase.zero());
 
     m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
   }
